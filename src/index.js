@@ -8,7 +8,7 @@ Interceptador de requisições que interromper totalmente a requisição ou alte
 
 const express = require('express');
 const cors = require('cors')
-const { uuid } = require('uuidv4');
+
 const { uuid, isUuid } = require('uuidv4');
 
 const app = express();
