@@ -1,6 +1,15 @@
+/*
+Middleware:
+
+Interceptador de requisições que interromper totalmente a requisição ou alterar dados da requisição
+
+*/
+
+
 const express = require('express');
 const cors = require('cors')
 const { uuid } = require('uuidv4');
+const { uuid, isUuid } = require('uuidv4');
 
 const app = express();
 
@@ -8,6 +17,29 @@ app.use(cors());
 app.use(express.json());
 
 const projects = [];
+
+//Middleware
+function logRequest(request, response, next) {
+  const { method, url} = request
+
+  const logLabel = `[${method.toUpperCase()}] ${url}`;
+
+  console.log(logLabel)
+
+  return next() //Próximo Middleware
+}
+
+function validateProjectId(request, response, next){
+  const { id } = request.params
+
+  if (!isUuid(id)) {
+    return response.status(400).json({ error: "Invalid Project ID."});
+  }
+  return next();
+}
+
+app.use(logRequest);
+app.use('/projects/:id', validateProjectId)
 
 app.get('/projects', (request, response) => {
   const { title } = request.query;
@@ -65,5 +97,5 @@ app.delete('/projects/:id', (request, response) => {
 });
 
 app.listen(3333, () => {
-  console.log('✔ Back-end started!');
+  console.log('✔ Back-end started! From Fockink');
 });
